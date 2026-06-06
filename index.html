@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞翔的精灵 - 公益募捐网站</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 主要功能：顶部导航栏 (路由入口) -->
+<header>
+    <div class="logo"><i class="fas fa-dove"></i> <span data-i18n="logo">飞翔的精灵</span></div>
+    <nav class="nav-links">
+        <a onclick="navigateTo('home')" data-i18n="nav_home">首页</a>
+        <a onclick="openFullGallery()" data-i18n="nav_gallery">摄影作品</a>
+        <a onclick="navigateTo('activities')" data-i18n="nav_acts">爱心活动</a>
+        <a onclick="navigateTo('about')" data-i18n="nav_about">关于我们</a>
+        <a onclick="toggleLang()" class="lang-btn"><i class="fas fa-globe"></i> <span id="langText">EN</span></a>
+    </nav>
+</header>
+
+<!-- 页面 1: 首页 -->
+<div id="page-home" class="page-container active">
+    <!-- 轮播图 Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="carousel-arrow left" onclick="changeBanner(-1)"><i class="fas fa-chevron-left"></i></div>
+        <div class="carousel-arrow right" onclick="changeBanner(1)"><i class="fas fa-chevron-right"></i></div>
+        <div class="carousel-dots" id="heroDots"></div>
+
+        <div class="hero-content">
+            <h1 data-i18n="hero_title">守护自然，从我做起</h1>
+            <p data-i18n="hero_desc">每一份捐赠，都是对生命的敬畏与支持。</p>
+            <button class="btn btn-primary" onclick="navigateTo('activities')" data-i18n="hero_btn">点击了解更多</button>
+        </div>
+    </section>
+
+    <!-- 数据与弹幕区 -->
+    <section class="stats-section">
+        <div style="font-size:18px; color:#666; margin-bottom:10px;">
+            <span data-i18n="stats_prefix">截止</span> <span id="realTimeClock"></span>，<span data-i18n="stats_suffix">本站收到爱心反馈</span>
+        </div>
+        <div class="money-counter">2438 <span style="font-size:24px;color:#333;" data-i18n="stats_count">条 / 累计募捐 50万+ 元</span></div>
+        <div class="danmu-container" id="danmuArea"></div>
+    </section>
+
+    <!-- 摄影作品预览 -->
+    <section class="section-container">
+        <div class="section-title" data-i18n="home_gallery_title">最新摄影作品</div>
+        <div class="gallery-grid" id="homeGallery"></div>
+        <div style="text-align: center;">
+            <button class="btn btn-primary" onclick="openFullGallery()" data-i18n="home_gallery_btn">查看更多作品 (翻页)</button>
+        </div>
+    </section>
+
+    <!-- 活动预览 -->
+    <section class="section-container" style="background: white; border-radius: 20px;">
+        <div class="section-title" data-i18n="home_act_title">最新活动</div>
+        <div class="home-activity-preview" id="homeActivityPreview"></div>
+        <div style="text-align: center; margin-top: 40px;">
+            <button class="btn btn-primary" onclick="navigateTo('activities')" data-i18n="home_act_btn">了解更多内容 & 分类</button>
+        </div>
+    </section>
+
+    <!-- 友情链接 -->
+    <section class="section-container">
+        <div class="section-title" style="font-size: 24px; margin-bottom: 30px;" data-i18n="friend_links">友情链接</div>
+        <div class="friend-links-box">
+            <a href="https://www.tnc.org.cn/" class="friend-link-item" target="_blank"><i class="fas fa-dove"></i> 爱德基金会</a>
+            <a href="http://www.dlzoo.com/" class="friend-link-item" target="_blank"><i class="fas fa-leaf"></i> 红山森林动物园</a>
+            <a href="https://gongyi.qq.com/" class="friend-link-item" target="_blank"><i class="fas fa-hand-holding-heart"></i> 腾讯公益</a>                                            
+            <a href="https://www.wwfchina.org/" class="friend-link-item" target="_blank"><i class="fas fa-camera"></i> 中国野生动物保护协会</a>
+            <a href="https://www.worldwildlife.org/" class="friend-link-item" target="_blank"><i class="fas fa-globe-asia"></i> 世界自然基金会</a>
+        </div>
+    </section>
+    
+    <footer><p data-i18n="copyright">© 2025 飞翔的精灵 版权所有</p></footer>
+</div>
+
+<!-- 页面 2: 活动列表页 (含筛选) -->
+<div id="page-activities" class="page-container">
+    <div class="page-header">
+        <h1 data-i18n="act_page_title">爱心活动中心</h1>
+        <p data-i18n="act_page_desc">参与我们，共同守护这颗星球</p>
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterActs('all', this)" data-i18n="filter_all">全部活动</button>
+            <button class="filter-btn" onclick="filterActs('fund', this)" data-i18n="filter_fund">爱德基金会</button>
+            <button class="filter-btn" onclick="filterActs('zoo', this)" data-i18n="filter_zoo">红山动物园</button>
+            <button class="filter-btn" onclick="filterActs('personal', this)" data-i18n="filter_personal">个人活动</button>
+        </div>
+    </div>
+
+    <div class="section-container">
+        <div class="back-nav" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back_home">返回首页</span></div>
+        <div class="full-activity-grid" id="fullActivityGrid"></div>
+    </div>
+    <footer><p data-i18n="copyright">© 2025 飞翔的精灵 版权所有</p></footer>
+</div>
+
+<!-- 页面 3: 文章阅读页 -->
+<div id="page-article" class="page-container" style="background: #f9f9f9;">
+    <div class="article-page-container">
+        <div class="back-nav" onclick="navigateTo('activities')"><i class="fas fa-arrow-left"></i> <span data-i18n="back_list">返回活动列表</span></div>
+        
+        <img id="article-img" class="art-header-img" src="" alt="">
+        <h1 id="article-title" class="art-title"></h1>
+        <div id="article-meta" class="art-meta"></div>
+        <div id="article-body" class="art-body"></div>
+        
+        <div style="text-align: center; margin-top: 50px;">
+            <button class="btn btn-primary" onclick="openDonate('此活动')" data-i18n="art_donate_btn">为该活动捐赠</button>
+        </div>
+    </div>
+    <footer><p data-i18n="copyright">© 2025 飞翔的精灵 版权所有</p></footer>
+</div>
+
+<!-- 页面 4: 关于我们 -->
+<div id="page-about" class="page-container">
+    <div class="page-header">
+        <h1 data-i18n="about_title">关于我们</h1>
+        <p data-i18n="about_desc">连接人与自然，传递爱与希望</p>
+    </div>
+    <div class="section-container">
+        <div class="back-nav" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back_home">返回首页</span></div>
+        
+        <div class="about-grid">
+            <img src="img/banner2.jpg" class="about-img" alt="About Team">
+            <div class="about-text">
+                <h2 data-i18n="about_mission_title">我们的使命</h2>
+                <p data-i18n="about_mission_p1">"飞翔的精灵"成立于2020年，是一个致力于野生动物保护与自然生态恢复的公益平台。我们相信，每一只飞翔的鸟儿，每一片绿色的森林，都是地球母亲赐予我们最宝贵的礼物。</p>
+                <p data-i18n="about_mission_p2">通过汇聚摄影师的镜头语言与爱心人士的捐助，我们将善意转化为实际的保护行动。从湿地清理到珍稀物种救助，我们的足迹遍布山川湖海。</p>
+                <div style="margin-top:20px;">
+                    <i class="fas fa-check-circle" style="color:var(--primary-green)"></i> <span data-i18n="about_val_1">公开透明的募捐流程</span><br><br>
+                    <i class="fas fa-check-circle" style="color:var(--primary-green)"></i> <span data-i18n="about_val_2">专业的野保执行团队</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 60px;">
+            <div class="section-title" data-i18n="about_team_title">核心团队</div>
+            <div class="team-box">
+                <div class="team-card">
+                    <i class="fas fa-user-circle" style="font-size: 50px; color: #ccc;"></i>
+                    <h3 style="margin: 10px 0;">Li Ming</h3>
+                    <p style="font-size:12px; color:#666;">创始人 & 摄影师</p>
+                </div>
+                <div class="team-card">
+                    <i class="fas fa-user-circle" style="font-size: 50px; color: #ccc;"></i>
+                    <h3 style="margin: 10px 0;">Sarah Zhang</h3>
+                    <p style="font-size:12px; color:#666;">项目运营总监</p>
+                </div>
+                <div class="team-card">
+                    <i class="fas fa-user-circle" style="font-size: 50px; color: #ccc;"></i>
+                    <h3 style="margin: 10px 0;">Wang Wei</h3>
+                    <p style="font-size:12px; color:#666;">自然科普顾问</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer><p data-i18n="copyright">© 2025 飞翔的精灵 版权所有</p></footer>
+</div>
+
+<!-- 页面 5: 摄影详情页 -->
+<div id="page-photo-detail" class="page-container" style="background: #fdfdfd;">
+    <div class="section-container" style="padding-top: 120px;">
+        <div class="back-nav" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> <span data-i18n="back_home">返回首页</span></div>
+
+        <div class="photo-detail-layout">
+            <div class="photo-detail-left">
+                <img id="detail-img-full" src="" class="detail-img">
+            </div>
+
+            <div class="photo-detail-right">
+                <h2 id="detail-title" style="font-size: 28px; margin-bottom: 10px;"></h2>
+                <p id="detail-desc" style="color: #666; margin-bottom: 30px; line-height: 1.6;"></p>
+
+                <div class="detail-meta-row">
+                    <span class="detail-meta-label" data-i18n="ph_photographer">摄影师</span>
+                    <span id="detail-author">Unknown</span>
+                </div>
+                <div class="detail-meta-row">
+                    <span class="detail-meta-label" data-i18n="ph_time">拍摄时间</span>
+                    <span id="detail-time">2023.05</span>
+                </div>
+                <div class="detail-meta-row">
+                    <span class="detail-meta-label" data-i18n="ph_location">拍摄地点</span>
+                    <span id="detail-loc">Wild Nature Reserve</span>
+                </div>
+                <div class="detail-meta-row" style="border-bottom: none;">
+                    <span class="detail-meta-label" data-i18n="ph_equip">拍摄设备</span>
+                    <span>Sony A7R4 + 600mm GM</span>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <button class="btn btn-primary" style="width: 100%; padding: 15px;" onclick="openDonate(document.getElementById('detail-title').innerText)" data-i18n="ph_donate_btn">支持这位摄影师</button>
+                    <p style="font-size: 12px; color: #999; text-align: center; margin-top: 10px;" data-i18n="ph_donate_tip">您的捐赠将用于野外拍摄设备的维护与生态保护。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer><p data-i18n="copyright">© 2025 飞翔的精灵 版权所有</p></footer>
+</div>
+
+<!-- 功能组件：捐款弹窗 -->
+<div class="modal-overlay" id="donateModal">
+    <div class="donate-form-box" id="donateForm">
+        <div style="text-align: right;"><i class="fas fa-times" style="cursor:pointer; font-size:20px;" onclick="closeDonate()"></i></div>
+        <h3 style="color: var(--primary-green); margin-bottom: 10px;" data-i18n="donate_modal_title">我来献爱心</h3>
+        <p id="donateTarget" style="color: #666; font-size: 13px; margin-bottom: 20px;"></p>
+        
+        <input type="text" class="donate-input" id="inp_name" placeholder="您的昵称 (选填)">
+        <input type="email" class="donate-input" id="inp_email" placeholder="邮箱 (用于接收证书)">
+        
+        <div style="display: flex; gap: 10px; margin: 10px 0;">
+            <button class="btn btn-outline" style="flex:1; padding:8px;" onclick="setVal(1)">1 <span data-i18n="currency">元</span></button>
+            <button class="btn btn-outline" style="flex:1; padding:8px;" onclick="setVal(5)">5 <span data-i18n="currency">元</span></button>
+            <button class="btn btn-outline" style="flex:1; padding:8px;" onclick="setVal(10)">10 <span data-i18n="currency">元</span></button>
+        </div>
+        <input type="number" id="customVal" class="donate-input" placeholder="自定义金额">
+        
+        <button class="btn btn-primary" style="width: 100%;" onclick="showEnvelopeAnimation()" data-i18n="donate_confirm">确认献爱心</button>
+    </div>
+
+    <!-- 信封动画结构 -->
+    <div class="envelope-wrapper" id="envelopeAnim">
+        <div class="flap-top"></div>
+        <div class="card-note">
+            <div class="card-title" data-i18n="env_title">感谢您的爱心</div>
+            <div class="card-heart"><i class="fas fa-hand-holding-heart"></i></div>
+            <div class="card-text" data-i18n="env_text">
+                高清摄影作品及捐助证书<br>请前往邮箱查看
+            </div>
+        </div>
+        <div class="envelope-body">
+            <div class="flap-left"></div>
+            <div class="flap-right"></div>
+            <div class="flap-bottom"></div>
+        </div>
+        <div style="position: absolute; bottom: -50px; left: 0; width: 100%; text-align: center;">
+            <button class="btn btn-outline" style="color: white; border-color: white; background: transparent;" onclick="closeDonate()" data-i18n="close">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- 功能组件：画廊查看大图弹窗 -->
+<div class="modal-overlay" id="galleryModal">
+    <div style="background:white; width:90%; max-width:1200px; height:80vh; padding:20px; border-radius:10px; display:flex; flex-direction:column;">
+        <div style="text-align:right;"><i class="fas fa-times" style="cursor:pointer; font-size:24px;" onclick="document.getElementById('galleryModal').style.display='none'"></i></div>
+        <h2 style="text-align:center; color: var(--dark-green); margin-bottom:20px;" data-i18n="all_gallery">全部摄影作品</h2>
+        <div class="gallery-grid" id="modalGrid" style="flex:1; overflow-y:auto;"></div>
+        <div style="text-align:center; margin-top:20px;">
+            <button class="btn btn-outline" onclick="changePage(-1)" data-i18n="prev_page">上一页</button> <span id="pageInfo">1/3</span> <button class="btn btn-outline" onclick="changePage(1)" data-i18n="next_page">下一页</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
